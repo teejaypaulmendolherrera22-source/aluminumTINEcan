@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>baby ni tj</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #f4a0b8;
+    }
+
+    #app {
+      height: 100%;
+      display: grid;
+      grid-template-rows: 1fr 1fr 1fr;
+    }
+
+    .film-strip {
+      display: flex;
+      height: 100%; /* 🔥 important */
+      width: max-content;
+    }
+
+    .film-strip-top {
+      animation: scrollLeft 20s linear infinite;
+    }
+
+    .film-strip-bottom {
+      animation: scrollRight 20s linear infinite;
+    }
+
+    @keyframes scrollLeft {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes scrollRight {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0); }
+    }
+
+    .strip-wrapper {
+      background: #1a1a1a;
+      padding: 4px 0;
+      height: 100%;
+      display: flex;
+      align-items: stretch; /* 🔥 stretch children */
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .photo-frame {
+      flex: 0 0 auto;
+      height: 100%; /* 🔥 FULL HEIGHT */
+      margin: 0 4px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .photo-frame span,
+    .photo-frame img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover; /* 🔥 fills frame nicely */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+
+    .film-perforations {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 6px 5px;
+      background: #1a1a1a;
+      height: 100%;
+      justify-content: center;
+    }
+
+    .film-hole {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      background: #f4a0b8;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="app">
+
+  <!-- TOP -->
+  <div style="display:flex; align-items:center; overflow:hidden; padding:10px 0;">
+    <div class="strip-wrapper" style="width:100%;">
+      <div class="film-perforations" id="perf-top-left"></div>
+
+      <div style="overflow:hidden; flex:1; height:100%;">
+        <div class="film-strip film-strip-top" id="strip-top"></div>
+      </div>
+
+      <div class="film-perforations" id="perf-top-right"></div>
+    </div>
+  </div>
+
+  <!-- MIDDLE -->
+  <div></div>
+
+  <!-- BOTTOM -->
+  <div style="display:flex; align-items:center; overflow:hidden; padding:10px 0;">
+    <div class="strip-wrapper" style="width:100%;">
+      <div class="film-perforations" id="perf-bot-left"></div>
+
+      <div style="overflow:hidden; flex:1; height:100%;">
+        <div class="film-strip film-strip-bottom" id="strip-bottom"></div>
+      </div>
+
+      <div class="film-perforations" id="perf-bot-right"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const topColors = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#98D8C8'];
+  const bottomColors = ['#F7DC6F','#BB8FCE','#85C1E9','#82E0AA','#F1948A','#AED6F1','#F0B27A'];
+
+  const topIcons = ['<img src="t1.jpg">','<img src="t5.jpg">','<img src="t3.jpg">','<img src="t4.jpg">','<img src="t6.jpg">','<img src="t5.jpg">','<img src="t6.jpg">'];
+  const bottomIcons = ['<img src="t9.jpg">','<img src="t13.jpg">','<img src="t7.jpg">','<img src="t10.jpg">','<img src="t8.jpg">','<img src="t11.jpg">','<img src="t10.jpg">'];
+
+  const PHOTO_COUNT = 5;
+
+  function createPhotos(colors, icons) {
+    let html = '';
+
+    for (let round = 0; round < 2; round++) {
+      for (let i = 0; i < PHOTO_COUNT; i++) {
+        html += `
+          <div class="photo-frame"
+            style="width: calc(100vw / ${PHOTO_COUNT});
+                   background: linear-gradient(135deg, ${colors[i % colors.length]}, ${colors[(i+1) % colors.length]});">
+            <span>${icons[i % icons.length]}</span>
+          </div>
+        `;
+      }
+    }
+    return html;
+  }
+
+  function createPerforations(id, count = 6) {
+    const el = document.getElementById(id);
+    let h = '';
+    for (let i = 0; i < count; i++) {
+      h += '<div class="film-hole"></div>';
+    }
+    el.innerHTML = h;
+  }
+
+  document.getElementById('strip-top').innerHTML = createPhotos(topColors, topIcons);
+  document.getElementById('strip-bottom').innerHTML = createPhotos(bottomColors, bottomIcons);
+
+  ['perf-top-left','perf-top-right','perf-bot-left','perf-bot-right']
+    .forEach(id => createPerforations(id));
+</script>
+
+</body>
+</html>
